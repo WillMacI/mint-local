@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <a href="/transactions"><i class="fa-solid fa-circle-arrow-left"></i>&nbsp;&nbsp;Back to Transactions</a><br>
+        <h1 class="title is-1"><%- transaction.original_description %></h1>
+        <hr>
+
+        <form method="post" action="/transactions/edit">
+            <div class="field">
+                <label class="label">Id</label>
+                <div class="control">
+                    <input class="input" name="id" type="text" value="<%- transaction.id %>" readonly>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Date</label>
+                <div class="control">
+                    <input class="input" name="date" type="text" value="<%- transaction.date %>">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Description</label>
+                <div class="control">
+                    <input class="input" name="description" type="text" value="<%- transaction.description %>">
+                </div>
+            </div>
+            <div class="field has-addons">
+                <p class="control">
+                <span class="select">
+                  <select>
+                    <option>$</option>
+                  </select>
+                </span>
+                </p>
+                <p class="control">
+                    <input class="input" name="amount" type="text" value="<%- transaction.amount %>">
+                </p>
+                <p class="control">
+                    <a class="button">
+                        🇨🇦&nbsp;&nbsp;CAD
+                    </a>
+                </p>
+            </div>
+            <div class="field">
+                <label class="label">Transaction Type</label>
+                <div class="control">
+                    <input class="input" name="transaction_type" type="text" value="<%- transaction.transaction_type %>" readonly>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Category</label>
+                <div class="control">
+                    <input class="input" name="category" type="text" value="<%- transaction.category %>">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Account Name</label>
+                <div class="control">
+                    <input class="input" name="account_name" type="text" value="<%- transaction.account_name %>" readonly>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Label</label>
+                <div class="control">
+                    <input class="input" name="label" type="text" value="<%- transaction.label %>">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Notes</label>
+                <div class="control">
+                    <textarea class="textarea" name="notes" type="text" value="<%- transaction.label %>"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button type="submit" class="button is-primary">Save</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>

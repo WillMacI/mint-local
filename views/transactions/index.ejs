@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <h1 class="title is-1">Transactions</h1>
+        <hr>
+        <div class="box">
+            <form>
+            <div class="field">
+                <div class="columns">
+                    <div class="column">
+                        <div class="control has-icons-left">
+                            <div class="select">
+                                <select>
+                                    <option>2023</option>
+                                    <option>2022</option>
+                                    <option>2021</option>
+                                </select>
+                            </div>
+                            <span class="icon is-left">
+                        <i class="fa-regular fa-calendar"></i>
+                    </span>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="control has-icons-left">
+                            <div class="select">
+                                <select>
+                                    <option>January</option>
+                                    <option>February</option>
+                                    <option>March</option>
+                                    <option>April</option>
+                                    <option>May</option>
+                                    <option>June</option>
+                                    <option>July</option>
+                                    <option>August</option>
+                                    <option>September</option>
+                                    <option>October</option>
+                                    <option>November</option>
+                                    <option>December</option>
+                                </select>
+                            </div>
+                            <span class="icon is-left">
+                        <i class="fa-solid fa-calendar-days"></i>
+                      </span>
+                        </div>
+                    </div>
+                    <div class="column">
+                        Third column
+                    </div>
+                    <div class="column">
+                        Fourth column
+                    </div>
+                </div>
+
+
+
+
+            </div>
+            <div class="field">
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input" name="search" type="text" value="<%- search %>">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-search"></i>
+                    </span>
+                </p>
+            </div>
+            <div class="field">
+                <button type="submit" class="button is-primary is-fullwidth">Search</button>
+
+            </div>
+            </form>
+        </div>
+        <table class='table'>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Original Description</th>
+                <th>Amount</th>
+                <th>Transaction Type</th>
+                <th>Category</th>
+                <th>Account Name</th>
+                <th>Label</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% transactions.forEach(function(trans){ %>
+                <tr>
+                    <td><%- trans.date %></td>
+                    <td><a href="/transactions/<%- trans.id %>"><%- trans.description %></a> </td>
+                    <td><%- trans.original_description %></td>
+                    <td><%- trans.amount %></td>
+                    <td><%- trans.transaction_type %></td>
+                    <td><%- trans.category %></td>
+                    <td><%- trans.account_name %></td>
+                    <td><%- trans.label %></td>
+                    <td></td>
+                </tr>
+
+            <% }); %>
+
+
+            </tbody>
+        </table>
+
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>

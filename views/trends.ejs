@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <h1 class="title is-1">Trends</h1>
+        <hr>
+        <h2 class="subtitle is-2">Net Income</h2>
+        <h4 class="subtitle is-4">Yearly Total: $<span id="net-income-yearly-total"></span></h4>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <%- include('partials/footer'); %>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    axios.get('/trends/net-income')
+        .then(function (response) {
+            const ctx = document.getElementById('myChart');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: response.data[0],
+                    datasets: [{
+                        borderColor: '#00c4a7',
+                        label: 'Net Income per Month',
+                        data: response.data[1],
+                        tension: 0.3,
+                        borderWidth: 3
+                    }]
+                }
+            });
+            let total_yearly_net_income = 0;
+            response.data[1].forEach(function(number) {
+                total_yearly_net_income += number;
+
+            });
+
+            document.getElementById("net-income-yearly-total").innerHTML = total_yearly_net_income;
+            // handle success
+            console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+        .finally(function () {
+            // always executed
+        });
+
+</script>
+</body>
+</html>
