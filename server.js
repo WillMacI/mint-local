@@ -4,7 +4,8 @@ const port = 3000
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-
+require('dotenv').config();
+const axios = require('axios')
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -19,13 +20,13 @@ const operatorsAliases = {
     $not: Op.not
 }
 const sequelize = new Sequelize(
-    'mint_local',
-    'root',
-    'root',
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
     {
-        host: 'localhost',
-        port: 8806,
-        dialect: 'mysql'
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: process.env.DB_DIALECT
     },
     {operatorsAliases}
 );
@@ -39,7 +40,6 @@ sequelize.authenticate().then(() => {
 const Transaction = sequelize.define("transactions", {
     id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         primaryKey: true
     },
     date: {
@@ -69,6 +69,39 @@ const Transaction = sequelize.define("transactions", {
     },
     notes: {
         type: DataTypes.STRING
+    }
+}, {
+    timestamps: false
+})
+
+const Categories = sequelize.define("categories", {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    budgeted_amount: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    timestamps: false
+})
+
+const Settings = sequelize.define("settings", {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    value: {
+        type: DataTypes.STRING,
     }
 }, {
     timestamps: false
@@ -115,7 +148,8 @@ app.get('/transactions', async (req, res) => {
                 description: {
                     [Op.like]: '%'+req.query.search+'%'
                 }
-            }
+            },
+
 
         });
         res.render('transactions/index', {
@@ -131,7 +165,10 @@ app.get('/transactions', async (req, res) => {
             date: {
                 [Op.like]: month+'/%%/'+year
             }
-        }
+        },
+        order: [
+            ['date', 'DESC'],
+        ],
     });
     res.render('transactions/index', {
         transactions: transactions,
@@ -155,12 +192,29 @@ app.post('/transactions/edit', async (req, res) => {
     }
 
 })
-app.get('/transactions/:id', async (req, res) => {
+app.get('/transaction/:id', async (req, res) => {
     const trans = await Transaction.findByPk(req.params.id);
 
     res.render('transactions/view', {
         transaction: trans,
     });
+})
+
+app.get('/transactions/new', async (req, res) => {
+    res.render('transactions/new', {
+    });
+})
+
+app.post('/transactions/create', async (req, res) => {
+    const trans = await Transaction.create(req.body);
+
+    if(trans){
+        res.redirect("/transactions?create=successful")
+
+    } else {
+        res.redirect("/transactions?create=error")
+
+    }
 })
 
 async function get_transactions(month, year) {
@@ -204,6 +258,66 @@ app.get('/trends/net-income', async (req, res) => {
 app.get('/trends', async (req, res) => {
     res.render('trends');
 })
+
+app.get('/budget', async (req, res) => {
+    res.render('trends');
+})
+
+app.get('/db/sync', async (req, res) => {
+   const sync = await sequelize.sync({ force: true });
+   if(sync){
+       console.log('All models were synchronized successfully.');
+       res.send("All models were synchronized successfully.")
+   } else {
+       console.log('Sync error.');
+       res.send("Sync error.")
+
+   }
+})
+
+app.get('/plaid', async (req, res) => {
+    res.render('plaid/index', {})
+})
+
+app.get('/settings/db', async (req, res) => {
+    const db_info = {
+        name: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: process.env.DB_DIALECT,
+        phpMyAdmin_port: process.env.PHPMYADMIN_PORT
+    }
+    res.render('settings/db', { db_info })
+})
+
+app.get('/settings/bank', async (req, res) => {
+    const bank_conn = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/identity');
+    let bank_connected = true;
+    if(bank_conn.data.error){
+        bank_connected = false
+    } else {
+        const accounts = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/accounts');
+        res.render('settings/bank', { bank_connected: bank_connected, accounts: accounts.data.accounts})
+    }
+    //console.log(bank_conn)
+    res.render('settings/bank', { bank_connected: bank_connected})
+})
+
+app.get('/settings/migrate', async (req, res) => {
+    const bank_conn = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/identity');
+    let bank_connected = true;
+    if(bank_conn.data.error){
+        bank_connected = false
+    } else {
+        const transactions = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/transactions');
+        res.render('settings/migrate', { bank_connected: bank_connected, transactions: transactions.data.latest_transactions})
+    }
+    //console.log(bank_conn)
+    res.render('settings/migrate', { bank_connected: bank_connected})
+})
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })

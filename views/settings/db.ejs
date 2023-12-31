@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <h1 class="title is-1">Database Settings</h1>
+        <hr>
+        <div class="box">
+            <h3 class="subtitle is-3">Database Connection</h3>
+            <p><b>Name: </b><%- db_info.name %></p>
+            <p><b>User: </b><%- db_info.user %></p>
+            <p><b>Password: </b><%- db_info.password %></p>
+            <p><b>Host: </b><%- db_info.host %></p>
+            <p><b>Port: </b><%- db_info.port %></p>
+            <p><b>Dialect: </b><%- db_info.dialect %></p>
+            <br>
+            <a class="button" href="http://localhost:<%- db_info.phpMyAdmin_port %>/phpMyAdmin5"><i class="fa-solid fa-arrow-up-right-from-square"></i>&nbsp;&nbsp;Launch phpMyAdmin</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+</body>
+</html>

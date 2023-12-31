@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <h1 class="title is-1">Migrate Transactions</h1>
+        <hr>
+        <% if (bank_connected){ %>
+            <div class="transactions-from-bank">
+                <table class='table is-fullwidth'>
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Original Description</th>
+                        <th>Amount</th>
+                        <th>Transaction Type</th>
+                        <th>Category</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% transactions.forEach(function(trans){ %>
+                        <tr>
+                            <td><%- trans.authorized_date %></td>
+                            <td><%- trans.merchant_name %></td>
+                            <td><%- trans.name %></td>
+                            <td>$<%- trans.amount %></td>
+                            <td><% if(trans.amount>0){ %> credit <% } else { %> debit <% } %></td>
+                            <td><%- trans.personal_finance_category.detailed %></td>
+                        </tr>
+
+                    <% }); %>
+                    </tbody>
+                </table>
+
+            </div>
+        <% } %>
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+</body>
+</html>

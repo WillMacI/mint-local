@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <a href="/transactions"><i class="fa-solid fa-circle-arrow-left"></i>&nbsp;&nbsp;Back to Transactions</a><br>
+        <h1 class="title is-1">Add a Transaction</h1>
+        <hr>
+
+        <form method="post" action="/transactions/create">
+            <div class="field">
+                <label class="label">Date</label>
+                <div class="control">
+                    <input class="input" name="date" type="text" placeholder="MM/DD/YYYY">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Original Description</label>
+                <div class="control">
+                    <input class="input" name="original_description" type="text">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Description</label>
+                <div class="control">
+                    <input class="input" name="description" type="text">
+                </div>
+            </div>
+            <div class="field has-addons">
+                <p class="control">
+                <span class="select">
+                  <select>
+                    <option>$</option>
+                  </select>
+                </span>
+                </p>
+                <p class="control">
+                    <input class="input" name="amount" type="text">
+                </p>
+                <p class="control">
+                    <a class="button">
+                        🇨🇦&nbsp;&nbsp;CAD
+                    </a>
+                </p>
+            </div>
+            <div class="field">
+                <label class="label">Transaction Type</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="transaction_type">
+                            <option value="debit">debit</option>
+                            <option value="credit">credit</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Category</label>
+                <div class="control">
+                    <input class="input" name="category" type="text">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Account Name</label>
+                <div class="control">
+                    <input class="input" name="account_name" type="text">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Label</label>
+                <div class="control">
+                    <input class="input" name="label" type="text">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Notes</label>
+                <div class="control">
+                    <textarea class="textarea" name="notes" type="text"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button type="submit" class="button is-primary">Save</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>

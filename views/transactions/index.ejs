@@ -99,9 +99,9 @@
             <% transactions.forEach(function(trans){ %>
                 <tr>
                     <td><%- trans.date %></td>
-                    <td><a href="/transactions/<%- trans.id %>"><%- trans.description %></a> </td>
+                    <td><a href="/transaction/<%- trans.id %>"><%- trans.description %></a> </td>
                     <td><%- trans.original_description %></td>
-                    <td><%- trans.amount %></td>
+                    <td>$<%- trans.amount %></td>
                     <td><%- trans.transaction_type %></td>
                     <td><%- trans.category %></td>
                     <td><%- trans.account_name %></td>

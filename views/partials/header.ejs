@@ -14,16 +14,50 @@
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
             <a class="navbar-item" href="/">
-                Home
+                <i class="fa-solid fa-house"></i>&nbsp;&nbsp;Home
             </a>
 
             <a class="navbar-item" href="/transactions">
-                Transactions
+                <i class="fa-solid fa-list"></i>&nbsp;&nbsp;Transactions
             </a>
 
             <a class="navbar-item" href="/trends">
-                Trends
+                <i class="fa-solid fa-arrow-trend-up"></i>&nbsp;&nbsp;Trends
             </a>
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    <i class="fa-solid fa-gear"></i>&nbsp;&nbsp;Settings
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="/settings/db">
+                        <i class="fa-solid fa-database"></i>&nbsp;&nbsp;Database
+                    </a>
+                    <a class="navbar-item" href="/settings/bank">
+                        <i class="fa-solid fa-building-columns"></i>&nbsp;&nbsp;Bank Connections
+                    </a>
+                    <a class="navbar-item" href="/settings/migrate">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Migrate Transactions
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item">
+                        Report an issue
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-primary" href="/transactions/new">
+                        <strong><i class="fa-solid fa-plus"></i>&nbsp;&nbsp;New Transaction</strong>
+                    </a>
+                    <a class="button is-light">
+                        Log in
+                    </a>
+                </div>
+            </div>
         </div>
 
 

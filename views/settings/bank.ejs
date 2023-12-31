@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <br>
+    <div class="container is-max-desktop">
+        <h1 class="title is-1">Bank Connections</h1>
+        <p>Status: <% if (!bank_connected){ %> <span class="tag is-danger">Disconnected</span> <% } else { %> <span class="tag is-success">Connected</span><% } %></p>
+        <hr>
+        <div class="box">
+            <% if (!bank_connected){ %>
+                <div class="plaid-box">
+                    <img width="200px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Plaid_logo.svg/1200px-Plaid_logo.svg.png"><br><br>
+                    <h5 class="title is-3">Link your bank accounts with Plaid.</h5>
+                    <p>Plaid gives developers the tools they need to create easy and accessible user experiences. That’s why more than 7,000 apps and services are powered by Plaid’s API-first network. And with just a few lines of code, your users can connect to more than 12,000 financial institutions.</p>
+                    <br>
+                    <div class="buttons">
+                        <a class="button is-dark" target="_blank" href="https://plaid.com/"><i class="fa-solid fa-arrow-up-right-from-square"></i>&nbsp;&nbsp;Learn More</a>
+                        <button class="button is-black" id="link-button"><i class="fa-solid fa-link"></i>&nbsp;&nbsp;Link Account</button>
+                    </div>
+
+                </div>
+            <% } else { %>
+                <div class="account-box">
+                    <div class="account">
+                        <% accounts.forEach(function(account){ %>
+                            <h2 class="title is-2">$<%- account.balances.available %></h2>
+                            <h3 class="title is-3"><%- account.name %></h3>
+                            <p><%- account.official_name %></p>
+                            <hr>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <% } %>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script type="text/javascript">
+    (async function($) {
+        var handler = Plaid.create({
+            // Create a new link_token to initialize Link
+            token: (await $.post('http://localhost:8001/api/create_link_token')).link_token,
+            onLoad: function() {
+                // Optional, called when Link loads
+            },
+            onSuccess: function(public_token, metadata) {
+                // Send the public_token to your app server.
+                // The metadata object contains info about the institution the
+                // user selected and the account ID or IDs, if the
+                // Account Select view is enabled.
+                $.post('http://localhost:8001/api/set_access_token', {
+                    public_token: public_token,
+                });
+            },
+            onExit: function(err, metadata) {
+                // The user exited the Link flow.
+                if (err != null) {
+                    // The user encountered a Plaid API error prior to exiting.
+                }
+                // metadata contains information about the institution
+                // that the user selected and the most recent API request IDs.
+                // Storing this information can be helpful for support.
+            },
+            onEvent: function(eventName, metadata) {
+                // Optionally capture Link flow events, streamed through
+                // this callback as your users connect an Item to Plaid.
+                // For example:
+                // eventName = "TRANSITION_VIEW"
+                // metadata  = {
+                //   link_session_id: "123-abc",
+                //   mfa_type:        "questions",
+                //   timestamp:       "2017-09-14T14:42:19.350Z",
+                //   view_name:       "MFA",
+                // }
+            }
+        });
+
+        $('#link-button').on('click', function(e) {
+            handler.open();
+        });
+    })(jQuery);
+</script>
+</html>
