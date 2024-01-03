@@ -77,12 +77,18 @@
         <h3 class="title is-3">Largest Transactions in <span id="month"></span></h3>
         <div class="largest-transactions">
             <div class="transaction">
-                <% for(let i=0; i<=9; i++){ %>
+                <% if(transactions.length > 8){ %>
+                    <% for(let i=0; i<=9; i++){ %>
 
-                <h4 class="subtitle is-4"><a href="/transactions/<%- transactions[i].id %>"><b><%- i+1 %>.  <%- transactions[i].description %></b></a> : <% if(transactions[i].transaction_type == "credit"){ %> <i style="color: #00c4a7" class="fa-solid fa-arrow-up"></i> <% } else { %> <i style="color: red" class="fa-solid fa-arrow-down"></i> <% }  %>
-                    $<%- transactions[i].amount %></h4>
-                <% } %>
-
+                        <h4 class="subtitle is-4"><a href="/transactions/<%- transactions[i].id %>"><b><%- i+1 %>.  <%- transactions[i].description %></b></a> : <% if(transactions[i].transaction_type == "credit"){ %> <i style="color: #00c4a7" class="fa-solid fa-arrow-up"></i> <% } else { %> <i style="color: red" class="fa-solid fa-arrow-down"></i> <% }  %>
+                            $<%- transactions[i].amount %></h4>
+                    <% } %>
+                <% } else { %>
+                        <% for(let i=0; i<=transactions.length-1; i++){ %>
+                            <h4 class="subtitle is-4"><a href="/transactions/<%- transactions[i].id %>"><b><%- i+1 %>.  <%- transactions[i].description %></b></a> : <% if(transactions[i].transaction_type == "credit"){ %> <i style="color: #00c4a7" class="fa-solid fa-arrow-up"></i> <% } else { %> <i style="color: red" class="fa-solid fa-arrow-down"></i> <% }  %>
+                                $<%- transactions[i].amount %></h4>
+                        <% } %>
+                    <% } %>
             </div>
         </div>
         <br>

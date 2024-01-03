@@ -40,7 +40,7 @@ sequelize.authenticate().then(() => {
 const Transaction = sequelize.define("transactions", {
     id: {
         type: DataTypes.INTEGER,
-        primaryKey: true
+        primaryKey: true,
     },
     date: {
         type: DataTypes.STRING,
@@ -108,18 +108,18 @@ const Settings = sequelize.define("settings", {
 })
 
 app.get('/', async (req, res) => {
-    const d = new Date();
-    let month = d.getMonth()+1;
+    const date = new Date();
+    let month = date.getMonth()+1;
+    let year = date.getFullYear();
     const transactions = await Transaction.findAll({
         where: {
             date: {
-                [Op.like]: month+'/%%/2023'
+                [Op.like]: month+'/%%/'+year
             }
         },
         order: [
             ['amount', 'DESC'],
         ],
-
     });
     let debit_total = 0;
     let credit_total = 0;
@@ -293,29 +293,49 @@ app.get('/settings/db', async (req, res) => {
 })
 
 app.get('/settings/bank', async (req, res) => {
-    const bank_conn = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/identity');
-    let bank_connected = true;
-    if(bank_conn.data.error){
-        bank_connected = false
-    } else {
-        const accounts = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/accounts');
-        res.render('settings/bank', { bank_connected: bank_connected, accounts: accounts.data.accounts})
-    }
+
+    axios.get(process.env.PLAID_API_ENDPOINT+'/api/identity')
+        .then(async function (response) {
+            const accounts = await axios.get(process.env.PLAID_API_ENDPOINT + '/api/accounts');
+            let bank_connected = true;
+            if(response.data.error){
+                bank_connected = false
+            } else {
+                const accounts = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/accounts');
+                res.render('settings/bank', { bank_connected: bank_connected, accounts: accounts.data.accounts})
+            }
+            res.render('settings/bank', {bank_connected: response, accounts: accounts.data.accounts})
+
+        })
+        .catch(function (error) {
+
+            res.render('errors/index', { error: "The Plaid API server is not running. " + error })
+
+        })
+
     //console.log(bank_conn)
-    res.render('settings/bank', { bank_connected: bank_connected})
 })
 
 app.get('/settings/migrate', async (req, res) => {
-    const bank_conn = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/identity');
-    let bank_connected = true;
-    if(bank_conn.data.error){
-        bank_connected = false
-    } else {
-        const transactions = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/transactions');
-        res.render('settings/migrate', { bank_connected: bank_connected, transactions: transactions.data.latest_transactions})
-    }
-    //console.log(bank_conn)
-    res.render('settings/migrate', { bank_connected: bank_connected})
+    axios.get(process.env.PLAID_API_ENDPOINT+'/api/identity')
+        .then(async function (response) {
+            let bank_connected = true;
+            if(response.data.error){
+                bank_connected = false
+            } else {
+                const transactions = await axios.get(process.env.PLAID_API_ENDPOINT+'/api/transactions');
+                res.render('settings/migrate', { bank_connected: bank_connected, transactions: transactions.data.latest_transactions})
+            }
+            //console.log(bank_conn)
+            res.render('settings/migrate', { bank_connected: bank_connected})
+
+        })
+        .catch(function (error) {
+
+            res.render('errors/index', { error: "The Plaid API server is not running. " + error })
+
+        })
+
 })
 
 app.listen(port, () => {
