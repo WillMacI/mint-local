@@ -61,6 +61,9 @@ const Transaction = sequelize.define("transactions", {
     category: {
         type: DataTypes.STRING
     },
+    category_id: {
+        type: DataTypes.INTEGER
+    },
     account_name: {
         type: DataTypes.STRING
     },
@@ -84,8 +87,11 @@ const Categories = sequelize.define("categories", {
         allowNull: false
     },
     budgeted_amount: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
+    },
+    budget_ignore: {
+        type: DataTypes.BOOLEAN
     }
 }, {
     timestamps: false
@@ -193,16 +199,19 @@ app.post('/transactions/edit', async (req, res) => {
 
 })
 app.get('/transaction/:id', async (req, res) => {
+    const categories = await Categories.findAll()
+
     const trans = await Transaction.findByPk(req.params.id);
 
     res.render('transactions/view', {
         transaction: trans,
+        categories : categories
     });
 })
 
 app.get('/transactions/new', async (req, res) => {
-    res.render('transactions/new', {
-    });
+    const categories = await Categories.findAll()
+    res.render('transactions/new', { categories : categories });
 })
 
 app.post('/transactions/create', async (req, res) => {
@@ -260,11 +269,45 @@ app.get('/trends', async (req, res) => {
 })
 
 app.get('/budget', async (req, res) => {
-    res.render('trends');
+    //Get all categories in DB
+    const categories = await Categories.findAll()
+    //Let's build a balance sheet of all the categories, their transactions, and totals
+    let balance_sheet = []
+    let total_goal = 0
+    let total_spent = 0
+    //For each category get all the transactions in the category and add to total
+    for (const cat of categories) {
+      let category_total_spent = 0
+      const transactions = await Transaction.findAll({
+          where: {
+              category_id : cat.id
+          }
+      })
+      for(const trans of transactions){
+          category_total_spent += parseInt(trans.amount)
+      }
+      if(cat.budget_ignore == false){
+          total_goal+=cat.budgeted_amount
+          total_spent+=category_total_spent
+      }
+      const percent_spent = Math.round((category_total_spent/cat.budgeted_amount)*100)
+      balance_sheet.push({ category_id : cat.id, category_name: cat.name, target_amount : cat.budgeted_amount, total_spent : category_total_spent, percent_spent : percent_spent, transactions : transactions })
+    }
+    const total_percent_spent = Math.round((total_spent/total_goal)*100)
+
+    function daysInMonth (month, year) {
+        return new Date(year, month, 0).getDate();
+    }
+    const date = new Date();
+    const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    let month_name = month[date.getMonth()];
+    const days_in_month = daysInMonth(date.getMonth()+1, date.getFullYear())
+    const month_percent = Math.round((parseInt(date.getDay())/parseInt(days_in_month))*100)
+    res.render('budget/index', { month_name: month_name, month_percent: month_percent, balance_sheet : balance_sheet, total_goal : total_goal, total_spent : total_spent, total_percent_spent : total_percent_spent });
 })
 
 app.get('/db/sync', async (req, res) => {
-   const sync = await sequelize.sync({ force: true });
+   const sync = await sequelize.sync({ alter: true });
    if(sync){
        console.log('All models were synchronized successfully.');
        res.send("All models were synchronized successfully.")

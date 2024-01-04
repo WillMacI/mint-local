@@ -60,8 +60,13 @@
             </div>
             <div class="field">
                 <label class="label">Category</label>
-                <div class="control">
-                    <input class="input" name="category" type="text" value="<%- transaction.category %>">
+                <div class="control select">
+                    <select name="category_id">
+                        <% categories.forEach(function(cat){ %>
+                            <option value="<%- cat.id %>"><%- cat.name %></option>
+                        <% }) %>
+                    </select>
+                    <!-- <input class="input" name="category" type="text" value="<%- transaction.category %>"> -->
                 </div>
             </div>
             <div class="field">

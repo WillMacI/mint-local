@@ -14,6 +14,63 @@
     <div class="container is-max-desktop">
         <h1 class="title is-1">Monthly Budget</h1>
         <hr>
+        <section class="hero is-dark">
+            <div class="hero-body">
+                <h1 class="title is-1">
+                    <%- month_name %> is <%- month_percent %>% over.
+                </h1>
+                <progress class="progress is-primary is-small" value="<%- month_percent %>" max="100">15%</progress>
+
+            </div>
+        </section>
+        <section class="hero is-primary">
+            <div class="hero-body">
+                <h1 class="title is-1">
+                    $<%- total_goal %>
+                </h1>
+                <p class="subtitle">
+                    is the spending goal for this month.
+                </p>
+                <hr>
+                <h1 class="title is-1">
+                    $<%- total_spent %>
+                </h1>
+                <p class="subtitle">
+                    has been spent so far, <%- total_percent_spent %>% of the monthly budget.
+                </p>
+                <progress class="progress is-small" value="<%- total_percent_spent %>" max="100"></progress>
+
+            </div>
+        </section>
+        <br>
+        <div class="columns is-multiline is-desktop">
+            <% balance_sheet.forEach(function(cat){ %>
+                <div class="column is-half">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                <%- cat.category_name %>
+                            </p>
+                        </header>
+                        <div class="card-content">
+                            <div class="content">
+                                <h3 class="title is-3">$<%- cat.target_amount %></h3>
+                                <p>is the spending goal for this month.</p>
+                                <hr>
+                                <h3 class="title is-3">$<%- cat.total_spent %></h3>
+                                <p>has been spent so far, <%- cat.percent_spent %>% of the monthly budget.</p>
+                                <progress class="progress <% if(cat.percent_spent < 50){ %> is-success <% } else if(cat.percent_spent > 50 && cat.percent_spent < 100){ %> is-warning <% } else if(cat.percent_spent == 100) { %> is-danger <% } %>
+ is-small" value="<%- cat.percent_spent %>" max="100"></progress>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            <% }) %>
+
+        </div>
+
     </div>
 </main>
 

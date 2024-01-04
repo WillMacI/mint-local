@@ -66,7 +66,14 @@
             <div class="field">
                 <label class="label">Category</label>
                 <div class="control">
-                    <input class="input" name="category" type="text">
+                    <div class="select">
+                        <select name="category_id">
+                            <% categories.forEach(function(cat){ %>
+                                <option value="<%- cat.id %>"><%- cat.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <!-- <input class="input" name="category" type="text"> -->
                 </div>
             </div>
             <div class="field">
