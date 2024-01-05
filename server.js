@@ -148,11 +148,14 @@ app.get('/', async (req, res) => {
 })
 app.get('/transactions', async (req, res) => {
 
-    if(req.query.search){
+    if(req.query.year){
         const transactions = await Transaction.findAll({
             where: {
                 description: {
                     [Op.like]: '%'+req.query.search+'%'
+                },
+                date: {
+                    [Op.like]: req.query.month+'/%%/'+req.query.year
                 }
             },
 

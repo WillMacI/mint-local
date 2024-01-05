@@ -78,7 +78,7 @@
         <div class="largest-transactions">
             <div class="transaction">
                 <% if(transactions.length > 8){ %>
-                    <% for(let i=0; i<=9; i++){ %>
+                    <% for(let i=0; i<9; i++){ %>
 
                         <h4 class="subtitle is-4"><a href="/transactions/<%- transactions[i].id %>"><b><%- i+1 %>.  <%- transactions[i].description %></b></a> : <% if(transactions[i].transaction_type == "credit"){ %> <i style="color: #00c4a7" class="fa-solid fa-arrow-up"></i> <% } else { %> <i style="color: red" class="fa-solid fa-arrow-down"></i> <% }  %>
                             $<%- transactions[i].amount %></h4>
